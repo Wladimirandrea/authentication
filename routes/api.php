@@ -3,26 +3,27 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// Rutas públicas
+// --- 1. RUTAS PÚBLICAS (Para usuarios SIN REGISTRO / GUEST) ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+// Route::get('/products', [ProductController::class, 'index']); // Ejemplo de catálogo público
 
-// Rutas protegidas generales (Cualquier usuario autenticado)
+// --- 2. RUTAS GENERALES (Cualquier usuario autenticado: Client, Seller, Admin) ---
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-// Ruta exclusiva para Administradores
-Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', function () {
-    return response()->json([
-        'message' => 'Bienvenido al panel de administración, Administrador.'
-    ]);
+// --- 3. RUTAS PARA VENDEDORES Y ADMINISTRADORES ---
+Route::middleware(['auth:sanctum', 'role:admin,seller'])->group(function () {
+    Route::get('/seller/dashboard', function () {
+        return response()->json(['message' => 'Panel de Vendedor / Admin']);
+    });
 });
 
-// Ruta para Administradores o Editores
-Route::middleware(['auth:sanctum', 'role:admin,editor'])->get('/posts/manage', function () {
-    return response()->json([
-        'message' => 'Tienes acceso para gestionar publicaciones.'
-    ]);
+// --- 4. RUTAS EXCLUSIVAS PARA ADMINISTRADORES ---
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return response()->json(['message' => 'Panel exclusivo de Administrador']);
+    });
 });

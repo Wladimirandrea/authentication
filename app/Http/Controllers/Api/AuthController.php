@@ -20,13 +20,12 @@ class AuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'image'    => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048', // máx 2MB
-            'role'     => 'nullable|string|in:admin,editor,user',
+            'image'    => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'role'     => 'nullable|string|in:admin,seller,client', // <--- Actualizado aquí
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            // Guarda la imagen en storage/app/public/users
             $imagePath = $request->file('image')->store('users', 'public');
         }
 
@@ -35,7 +34,7 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'image'    => $imagePath ? Storage::url($imagePath) : null,
-            'role'     => $request->role ?? 'user',
+            'role'     => $request->role ?? 'client', // <--- Por defecto los nuevos registros serán 'client'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
