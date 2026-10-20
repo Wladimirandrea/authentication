@@ -7,8 +7,22 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rutas protegidas por Sanctum
+// Rutas protegidas generales (Cualquier usuario autenticado)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+// Ruta exclusiva para Administradores
+Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', function () {
+    return response()->json([
+        'message' => 'Bienvenido al panel de administración, Administrador.'
+    ]);
+});
+
+// Ruta para Administradores o Editores
+Route::middleware(['auth:sanctum', 'role:admin,editor'])->get('/posts/manage', function () {
+    return response()->json([
+        'message' => 'Tienes acceso para gestionar publicaciones.'
+    ]);
 });
