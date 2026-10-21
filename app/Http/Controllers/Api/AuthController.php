@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,16 +16,8 @@ class AuthController extends Controller
     /**
      * Registro de usuario con imagen y rol.
      */
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'image'    => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
-            'role'     => 'nullable|string|in:admin,seller,client', // <--- Actualizado aquí
-        ]);
-
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('users', 'public');
@@ -34,7 +28,7 @@ class AuthController extends Controller
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'image'    => $imagePath ? Storage::url($imagePath) : null,
-            'role'     => $request->role ?? 'client', // <--- Por defecto los nuevos registros serán 'client'
+            'role'     => $request->role ?? 'client',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -50,13 +44,8 @@ class AuthController extends Controller
     /**
      * Inicio de sesión.
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string',
-        ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
@@ -80,7 +69,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        // Revoca el token con el que el usuario se autenticó
+        // Revoca el token actual del usuario autenticado
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
@@ -95,4 +84,6 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    
 }

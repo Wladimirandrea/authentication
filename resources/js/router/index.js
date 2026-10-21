@@ -7,6 +7,7 @@ import {
 
 import { useAuthStore } from '../stores/auth';
 import Login from '../views/Login.vue';
+import Register from '../views/Register.vue';
 
 // ========================================
 // PÁGINA PRINCIPAL PÚBLICA
@@ -31,6 +32,7 @@ const Home = {
                 >
                     Iniciar sesión
                 </router-link>
+                <router-link to="/register" class="text-sm text-indigo-600 hover:underline">¿No tienes cuenta? Regístrate aquí</router-link>
 
             </div>
 
@@ -180,6 +182,15 @@ const routes = [
         path: '/',
         name: 'Home',
         component: Home
+    },
+    // Register
+    {
+        path: '/register',
+        name: 'Register',
+        component: Register,
+        meta: {
+            guestOnly: true
+        }
     },
 
     // Login

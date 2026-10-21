@@ -44,6 +44,23 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.removeItem('user');
                 delete axios.defaults.headers.common['Authorization'];
             }
-        }
+        },
+        async register(credentials) {
+            try {
+                const response = await axios.post(`${API_URL}/register`, credentials);
+                
+                this.token = response.data.access_token;
+                this.user = response.data.user;
+
+                localStorage.setItem('token', this.token);
+                localStorage.setItem('user', JSON.stringify(this.user));
+
+                axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+                
+                return true;
+            } catch (error) {
+                throw error.response?.data?.message || 'Error al registrar el usuario';
+            }
+        },
     }
 });
