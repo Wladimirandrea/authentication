@@ -6,37 +6,12 @@ import Register from '../views/Register.vue';
 import AdminDashboard from '../views/admin/AdminDashboard.vue';
 import SellerDashboard from '../views/seller/SellerDashboard.vue';
 import ClientDashboard from '../views/client/ClientDashboard.vue';
+import Home from '../views/Home.vue';
 
 // ========================================
 // PÁGINA PRINCIPAL PÚBLICA
 // ========================================
-const Home = {
-    template: `
-        <div class="text-center">
 
-            <h1 class="text-3xl font-bold text-indigo-600 mb-4">
-                Bienvenido a nuestra aplicación
-            </h1>
-
-            <p class="text-gray-600 mb-6">
-                Gestiona tu cuenta y accede a nuestros servicios.
-            </p>
-
-            <div class="flex justify-center gap-4">
-
-                <router-link
-                    to="/login"
-                    class="bg-indigo-600 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-700"
-                >
-                    Iniciar sesión
-                </router-link>
-                <router-link to="/register" class="text-sm text-indigo-600 hover:underline">¿No tienes cuenta? Regístrate aquí</router-link>
-
-            </div>
-
-        </div>
-    `
-};
 
 // ========================================
 // OBTENER DASHBOARD SEGÚN EL ROL
