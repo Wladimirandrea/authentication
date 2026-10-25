@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         // ADMINISTRADOR
         // ========================================
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@sistema.com'],
             [
                 'name' => 'Administrador',
                 'password' => Hash::make('123456789'),
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
         // VENDEDOR
         // ========================================
         User::updateOrCreate(
-            ['email' => 'seller@example.com'],
+            ['email' => 'seller@sistema.com'],
             [
                 'name' => 'Vendedor',
                 'password' => Hash::make('123456789'),
@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
         // CLIENTE
         // ========================================
         User::updateOrCreate(
-            ['email' => 'client@example.com'],
+            ['email' => 'client@sistema.com'],
             [
                 'name' => 'Cliente',
                 'password' => Hash::make('123456789'),

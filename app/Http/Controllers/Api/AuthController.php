@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use App\Events\ClientRegistered;
 
 class AuthController extends Controller
 {
@@ -30,6 +31,10 @@ class AuthController extends Controller
             'image'    => $imagePath ? Storage::url($imagePath) : null,
             'role'     => $request->role ?? 'client',
         ]);
+
+        if ($user->role === 'client') {
+            broadcast(new ClientRegistered($user));
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -84,6 +89,4 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
-
-    
 }

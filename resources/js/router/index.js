@@ -1,13 +1,11 @@
-
-import {
-    createRouter,
-    createWebHistory,
-    useRouter
-} from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 import { useAuthStore } from '../stores/auth';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
+import AdminDashboard from '../views/admin/AdminDashboard.vue';
+import SellerDashboard from '../views/seller/SellerDashboard.vue';
+import ClientDashboard from '../views/client/ClientDashboard.vue';
 
 // ========================================
 // PÁGINA PRINCIPAL PÚBLICA
@@ -41,120 +39,6 @@ const Home = {
 };
 
 // ========================================
-// DASHBOARD DE ADMINISTRADOR
-// ========================================
-const AdminDashboard = {
-    template: `
-        <div class="text-center">
-
-            <h2 class="text-xl font-bold text-red-600 mb-2">
-                Panel de Administrador
-            </h2>
-
-            <p class="text-gray-600 mb-4">
-                Control total del sistema.
-            </p>
-
-            <button
-                @click="logout"
-                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-                Cerrar Sesión
-            </button>
-
-        </div>
-    `,
-
-    setup() {
-        const authStore = useAuthStore();
-        const router = useRouter();
-
-        const logout = async () => {
-            await authStore.logout();
-            router.replace('/login');
-        };
-
-        return { logout };
-    }
-};
-
-// ========================================
-// DASHBOARD DE VENDEDOR
-// ========================================
-const SellerDashboard = {
-    template: `
-        <div class="text-center">
-
-            <h2 class="text-xl font-bold text-blue-600 mb-2">
-                Panel de Vendedor (Seller)
-            </h2>
-
-            <p class="text-gray-600 mb-4">
-                Gestión de productos y ventas.
-            </p>
-
-            <button
-                @click="logout"
-                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-                Cerrar Sesión
-            </button>
-
-        </div>
-    `,
-
-    setup() {
-        const authStore = useAuthStore();
-        const router = useRouter();
-
-        const logout = async () => {
-            await authStore.logout();
-            router.replace('/login');
-        };
-
-        return { logout };
-    }
-};
-
-// ========================================
-// DASHBOARD DE CLIENTE
-// ========================================
-const ClientDashboard = {
-    template: `
-        <div class="text-center">
-
-            <h2 class="text-xl font-bold text-green-600 mb-2">
-                Panel de Cliente (Client)
-            </h2>
-
-            <p class="text-gray-600 mb-4">
-                Tus compras y perfil.
-            </p>
-
-            <button
-                @click="logout"
-                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-                Cerrar Sesión
-            </button>
-
-        </div>
-    `,
-
-    setup() {
-        const authStore = useAuthStore();
-        const router = useRouter();
-
-        const logout = async () => {
-            await authStore.logout();
-            router.replace('/login');
-        };
-
-        return { logout };
-    }
-};
-
-// ========================================
 // OBTENER DASHBOARD SEGÚN EL ROL
 // ========================================
 function getDashboardByRole(role) {
@@ -183,6 +67,7 @@ const routes = [
         name: 'Home',
         component: Home
     },
+
     // Register
     {
         path: '/register',
@@ -261,8 +146,7 @@ router.beforeEach((to) => {
     const isAuthenticated = Boolean(authStore.token);
     const userRole = authStore.user?.role;
 
-    // Usuario no autenticado intenta entrar
-    // a una ruta protegida
+    // Usuario no autenticado intenta entrar a una ruta protegida
     if (to.meta.requiresAuth && !isAuthenticated) {
         return {
             path: '/login',
@@ -272,7 +156,7 @@ router.beforeEach((to) => {
         };
     }
 
-    // Usuario autenticado intenta entrar al login
+    // Usuario autenticado intenta entrar al login o register
     if (to.meta.guestOnly && isAuthenticated) {
         return getDashboardByRole(userRole);
     }
